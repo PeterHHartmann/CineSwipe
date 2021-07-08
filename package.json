@@ -5,7 +5,9 @@
   "main": "app.js",
   "scripts": {
     "start": "pm2-runtime start ecosystem.config.js --env production",
-    "start-dev": "cross-env NODE_ENV=development nodemon app.js"
+    "start-dev": "cross-env NODE_ENV=development nodemon app.js",
+    "sass-compile": "sass public/sass:public/static/css",
+    "sass-watch": "sass --watch public/sass:public/static/css"
   },
   "repository": {
     "type": "git",
