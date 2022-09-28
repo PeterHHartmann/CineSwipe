@@ -8,12 +8,13 @@ const router = require('express').Router();
 const fetchMovies = async (options) => {
     try {
         const moviesResponse = await moviedb.discoverMovie(options);
-        const moviesList = await Promise.all(moviesResponse.results.map(async (result) => {
+        // was able to skip the initial variable, since Promise.all returns the resolved promises
+        return Promise.all(moviesResponse.results.map(async (result) => {
             const movieDetails = await moviedb.movieInfo({ id: result.id, append_to_response: 'watch/providers,videos'});
             movieDetails['media_type'] = 'movie';
             return movieDetails;
         }));
-        return moviesList;
+        //return moviesList;
     } catch (error) {
         console.error(error);
     }
@@ -185,6 +186,13 @@ router.get('/:media_type/:id', async (req, res, next) => {
     const id = req.params.id;
     const item = await itemDetails(id, media_type);
     res.send(item);
+});
+
+router.get('/ipinfo', async (req, res, next) => {
+    const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+    const response = await fetch(`https://api.db-ip.com/v2/free/${ip}`);
+    const ipinfo = await response.json();
+    res.send(ipinfo);
 });
 
 module.exports = {
